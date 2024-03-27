@@ -120,15 +120,10 @@
     contenido += '<table>';
     contenido += '<tr><th>Fecha</th><th>Detalle</th><th>Valor</th></tr>';
     gastos.forEach(function(gasto) {
-      contenido += '<tr><td>' + gasto.fecha + '</td><td>' + gasto.detalle + '</td><td>$' + formatNumber(gasto.valor.toFixed(2)) + '</td></tr>';
+      contenido += '<tr><td>' + gasto.fecha + '</td><td>' + gasto.detalle + '</td><td>' + formatCurrency(gasto.valor) + '</td></tr>';
     });
     contenido += '</table>';
     return contenido;
-  }
-
-  // Función para dar formato de separador de miles a un número
-  function formatNumber(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   // Función para generar el informe de pagos
@@ -138,7 +133,7 @@
     contenido += '<table>';
     contenido += '<tr><th>Fecha</th><th>Asociado</th><th>Valor</th></tr>';
     pagos.forEach(function(pago) {
-      contenido += '<tr><td>' + pago.fecha + '</td><td>' + pago.asociado + '</td><td>' + pago.valor + '</td></tr>';
+      contenido += '<tr><td>' + pago.fecha + '</td><td>' + pago.asociado + '</td><td>' + formatCurrency(pago.valor) + '</td></tr>';
     });
     contenido += '</table>';
     return contenido;
@@ -146,35 +141,39 @@
 
   // Función para calcular el dinero disponible
   function calcularDineroDisponible() {
-    // Obtener todos los pagos y gastos
-    var pagos = obtenerPagos();
-    var gastos = obtenerGastos();
-
-    // Calcular total de pagos
-    var totalPagos = pagos.reduce(function(total, pago) {
+    var totalAportes = obtenerPagos().reduce(function(total, pago) {
       return total + pago.valor;
     }, 0);
 
-    // Calcular total de gastos
-    var totalGastos = gastos.reduce(function(total, gasto) {
+    var totalGastos = obtenerGastos().reduce(function(total, gasto) {
       return total + gasto.valor;
     }, 0);
 
-    // Retornar el dinero disponible
-    return totalPagos - totalGastos;
+    return totalAportes - totalGastos;
   }
 
   // Función para generar el informe de dinero disponible
   function generarInformeDineroDisponible() {
-    var dineroDisponible = calcularDineroDisponible();
-    var totalPagos = obtenerPagos().reduce((total, pago) => total + pago.valor, 0);
-    var totalGastos = obtenerGastos().reduce((total, gasto) => total + gasto.valor, 0);
+    var totalAportes = obtenerPagos().reduce(function(total, pago) {
+      return total + pago.valor;
+    }, 0);
+
+    var totalGastos = obtenerGastos().reduce(function(total, gasto) {
+      return total + gasto.valor;
+    }, 0);
+
+    var dineroDisponible = totalAportes - totalGastos;
 
     var contenido = '<h3>Informe de Dinero Disponible</h3>';
-    contenido += '<p>Total de Aportes: $' + formatNumber(totalPagos.toFixed(2)) + '</p>';
-    contenido += '<p>Total de Gastos: $' + formatNumber(totalGastos.toFixed(2)) + '</p>';
-    contenido += '<p>Dinero Disponible: $' + formatNumber(dineroDisponible.toFixed(2)) + '</p>';
+    contenido += '<p>Total de Aportes: ' + formatCurrency(totalAportes.toFixed(2)) + '</p>';
+    contenido += '<p>Total de Gastos: ' + formatCurrency(totalGastos.toFixed(2)) + '</p>';
+    contenido += '<p>Dinero Disponible: ' + formatCurrency(dineroDisponible.toFixed(2)) + '</p>';
     return contenido;
+  }
+
+  // Función para dar formato de moneda a un número
+  function formatCurrency(number) {
+    return '$' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
 </script>
