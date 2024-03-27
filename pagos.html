@@ -52,7 +52,7 @@
 <div class="container">
   <h2>Pagos</h2>
 
-  <button class="button" onclick="window.location.href='asociados.html'">Inicio</button>
+  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
 
   <div class="form-group">
     <label for="buscar-usuario">Buscar Usuario:</label>
@@ -98,9 +98,7 @@
     if (asociadoEncontrado) {
       document.getElementById('resultado-busqueda').style.display = 'block';
       document.getElementById('nombre-asociado').textContent = asociadoEncontrado.nombre;
-      // Aquí se debe implementar la lógica para mostrar el historial de pagos del asociado
-      // Por ahora, se muestra un mensaje de ejemplo
-      document.getElementById('historial-pagos').innerHTML = '<li class="pagos-list-item">No hay pagos registrados para este usuario.</li>';
+      mostrarHistorialPagos(asociadoEncontrado.cc);
     } else {
       alert('El asociado no fue encontrado.');
     }
@@ -112,20 +110,92 @@
     return usuarios ? JSON.parse(usuarios) : [];
   }
 
+  // Función para mostrar el historial de pagos de un asociado
+  function mostrarHistorialPagos(numeroCedula) {
+    var historialPagos = obtenerHistorialPagos(numeroCedula);
+    var listaPagos = document.getElementById('historial-pagos');
+    listaPagos.innerHTML = '';
+    historialPagos.forEach(function(pago, index) {
+      var li = document.createElement('li');
+      li.textContent = pago.fecha + ' - ' + pago.descripcion + ' - Valor: $' + pago.valor.toLocaleString('es-CO');
+      li.classList.add('pagos-list-item');
+      var editarButton = document.createElement('button');
+      editarButton.textContent = 'Editar';
+      editarButton.onclick = function() {
+        editarPago(numeroCedula, index);
+      };
+      var eliminarButton       
+      editarButton.onclick = function() {
+        editarPago(numeroCedula, index);
+      };
+      var eliminarButton = document.createElement('button');
+      eliminarButton.textContent = 'Eliminar';
+      eliminarButton.onclick = function() {
+        eliminarPago(numeroCedula, index);
+      };
+      li.appendChild(editarButton);
+      li.appendChild(eliminarButton);
+      listaPagos.appendChild(li);
+    });
+  }
+
+  // Función para obtener el historial de pagos de un asociado desde el almacenamiento local
+  function obtenerHistorialPagos(numeroCedula) {
+    var historialPagos = localStorage.getItem('historialPagos_' + numeroCedula);
+    return historialPagos ? JSON.parse(historialPagos) : [];
+  }
+
+  // Función para guardar un pago en el historial de pagos de un asociado
+  function guardarPago(numeroCedula, pago) {
+    var historialPagos = obtenerHistorialPagos(numeroCedula);
+    historialPagos.push(pago);
+    localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
+  }
+
+  // Función para editar un pago en el historial de pagos de un asociado
+  function editarPago(numeroCedula, index) {
+    var historialPagos = obtenerHistorialPagos(numeroCedula);
+    var nuevoDescripcion = prompt('Ingrese la nueva descripción:');
+    var nuevoValor = prompt('Ingrese el nuevo valor:');
+    if (nuevoDescripcion !== null && nuevoValor !== null) {
+      historialPagos[index].descripcion = nuevoDescripcion;
+      historialPagos[index].valor = parseFloat(nuevoValor);
+      localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
+      mostrarHistorialPagos(numeroCedula);
+    }
+  }
+
+  // Función para eliminar un pago del historial de pagos de un asociado
+  function eliminarPago(numeroCedula, index) {
+    var confirmar = confirm('¿Estás seguro de que deseas eliminar este pago?');
+    if (confirmar) {
+      var historialPagos = obtenerHistorialPagos(numeroCedula);
+      historialPagos.splice(index, 1);
+      localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
+      mostrarHistorialPagos(numeroCedula);
+    }
+  }
+
   // Función para registrar un pago
   function registrarPago() {
+    var numeroCedula = document.getElementById('buscar-usuario').value;
     var fecha = document.getElementById('fecha').value;
     var descripcion = document.getElementById('descripcion').value;
-    var valor = document.getElementById('valor').value;
-    // Aquí se debe implementar la lógica para registrar el pago del asociado
-    // Puedes mostrar un mensaje de confirmación o realizar alguna otra acción según sea necesario
-    alert('Pago registrado exitosamente:');
-    // Limpiar los campos después de registrar el pago
-    document.getElementById('fecha').value = '';
-    document.getElementById('descripcion').value = '';
-    document.getElementById('valor').value = '';
+    var valor = parseFloat(document.getElementById('valor').value);
+    if (!isNaN(valor)) {
+      var pago = { fecha: fecha, descripcion: descripcion, valor: valor };
+      guardarPago(numeroCedula, pago);
+      mostrarHistorialPagos(numeroCedula);
+      // Limpiar los campos después de registrar el pago
+      document.getElementById('fecha').value = '';
+      document.getElementById('descripcion').value = '';
+      document.getElementById('valor').value = '';
+    } else {
+      alert('Por favor, ingrese un valor válido.');
+    }
   }
 </script>
 
 </body>
 </html>
+
