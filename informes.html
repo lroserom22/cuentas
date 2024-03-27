@@ -25,6 +25,9 @@
     .button:hover {
       background-color: #0056b3;
     }
+    #informe {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -32,18 +35,16 @@
 <div class="container">
   <h2>Informes</h2>
 
-  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
-
-  <!-- Botones para cada sección del informe -->
   <button class="button" onclick="generarInforme('usuarios')">Informe de Usuarios</button>
   <button class="button" onclick="generarInforme('gastos')">Informe de Gastos</button>
   <button class="button" onclick="generarInforme('pagos')">Informe de Pagos</button>
   <button class="button" onclick="generarInforme('dinero_disponible')">Informe de Dinero Disponible</button>
+
+  <div id="informe"></div>
 </div>
 
-<script src="jspdf.min.js"></script>
 <script>
-  // Función para generar el informe
+  // Función para generar el informe y mostrarlo en la página
   function generarInforme(tipo) {
     var contenido = '';
 
@@ -64,11 +65,8 @@
         contenido = 'Tipo de informe no válido';
     }
 
-    // Convertir contenido a PDF y descargar
-    var pdf = new jsPDF();
-    pdf.text('Informe - Asociación de Mujeres Sembradoras de Paz', 10, 10);
-    pdf.fromHTML(contenido, 10, 20);
-    pdf.save('informe_' + tipo + '.pdf');
+    // Mostrar el contenido del informe en el área designada
+    document.getElementById('informe').innerHTML = contenido;
   }
 
   // Función para generar el informe de usuarios
