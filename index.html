@@ -1,161 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestión Financiera</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asociación de Mujeres Sembradoras de Paz</title>
+  <style>
     body {
-        font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .title {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #007bff;
+      color: #fff;
     }
     .tab {
-        display: none;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+      margin: 20px auto;
+      width: 60%;
+      display: flex;
+      justify-content: center;
+      border-radius: 5px;
     }
-    input[type="text"], input[type="number"] {
-        margin-bottom: 10px;
-        padding: 5px;
-        width: 200px;
+    .tab a {
+      text-decoration: none;
     }
-    button {
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
+    .tab button {
+      background-color: #007bff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+      color: #fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
     }
-    button:hover {
-        background-color: #45a049;
+    .tab button:hover {
+      background-color: #0056b3;
     }
-    #informe {
-        margin-top: 20px;
+    .tab button.active {
+      background-color: #0056b3;
     }
-</style>
+  </style>
 </head>
 <body>
 
-<h2>Gestión Financiera</h2>
-
-<div class="tab" id="registroUsuarios">
-    <h3>Registro de Nuevo Usuario</h3>
-    <input type="text" id="cedulaUsuario" placeholder="Número de Cédula"><br>
-    <input type="text" id="nombreUsuario" placeholder="Nombre del Usuario"><br>
-    <button onclick="registrarUsuario()">Registrar Usuario</button>
+<div class="title">
+  <h1>Asociación de Mujeres Sembradoras de Paz</h1>
 </div>
 
-<div class="tab" id="registroPagos">
-    <h3>Registro de Pago Semanal</h3>
-    <select id="usuariosPagoSemanal">
-        <option value="" disabled selected>Seleccione un Usuario</option>
-    </select><br>
-    <input type="date" id="fechaPagoSemanal" placeholder="Fecha del Pago"><br>
-    <input type="number" id="valorPagoSemanal" placeholder="Valor del Pago"><br>
-    <button onclick="registrarPagoSemanal()">Registrar Pago Semanal</button>
+<div class="tab">
+  <a href="asociados.html"><button class="tablinks">Asociados</button></a>
+  <a href="pagos.html"><button class="tablinks">Pagos</button></a>
+  <a href="informes.html"><button class="tablinks">Informes</button></a>
 </div>
 
-<div class="tab" id="registroPagosMensuales">
-    <h3>Registro de Pago Mensual</h3>
-    <select id="usuariosPagoMensual">
-        <option value="" disabled selected>Seleccione un Usuario</option>
-    </select><br>
-    <input type="number" id="valorPagoMensual" placeholder="Valor del Pago Mensual"><br>
-    <button onclick="registrarPagoMensual()">Registrar Pago Mensual</button>
-</div>
-
-<div class="tab" id="registroGastos">
-    <h3>Registro de Gastos</h3>
-    <input type="text" id="descripcionGasto" placeholder="Descripción del Gasto"><br>
-    <input type="number" id="valorGasto" placeholder="Valor del Gasto"><br>
-    <button onclick="registrarGasto()">Registrar Gasto</button>
-</div>
-
-<div class="tab" id="informe">
-    <h3>Informe de Dinero Disponible</h3>
-    <p id="dineroDisponible"></p>
-</div>
-
-<div>
-    <button onclick="openTab('registroUsuarios')">Registro de Usuarios</button>
-    <button onclick="openTab('registroPagos')">Registro de Pagos Semanales</button>
-    <button onclick="openTab('registroPagosMensuales')">Registro de Pagos Mensuales</button>
-    <button onclick="openTab('registroGastos')">Registro de Gastos</button>
-    <button onclick="openTab('informe')">Informe</button>
-</div>
-
-<script>
-    var usuarios = [];
-    var dineroTotal = 0;
-    var gastosTotales = 0;
-
-    function openTab(tabId) {
-        var tabs = document.getElementsByClassName("tab");
-        for (var i = 0; i < tabs.length; i++) {
-            tabs[i].style.display = "none";
-        }
-        document.getElementById(tabId).style.display = "block";
-    }
-
-    function registrarUsuario() {
-        var cedulaUsuario = document.getElementById("cedulaUsuario").value;
-        var nombreUsuario = document.getElementById("nombreUsuario").value;
-        usuarios.push({cedula: cedulaUsuario, nombre: nombreUsuario, pagos: [], pagoMensual: 0});
-        actualizarSelectUsuarios();
-        document.getElementById("cedulaUsuario").value = "";
-        document.getElementById("nombreUsuario").value = "";
-    }
-
-    function registrarPagoSemanal() {
-        var usuarioSeleccionado = document.getElementById("usuariosPagoSemanal").value;
-        var fechaPago = document.getElementById("fechaPagoSemanal").value;
-        var valorPago = parseFloat(document.getElementById("valorPagoSemanal").value);
-        usuarios.forEach(function(usuario) {
-            if (usuario.nombre === usuarioSeleccionado) {
-                usuario.pagos.push({fecha: fechaPago, valor: valorPago});
-                dineroTotal += valorPago;
-            }
-        });
-        actualizarInforme();
-    }
-
-    function registrarPagoMensual() {
-        var usuarioSeleccionado = document.getElementById("usuariosPagoMensual").value;
-        var valorPagoMensual = parseFloat(document.getElementById("valorPagoMensual").value);
-        usuarios.forEach(function(usuario) {
-            if (usuario.nombre === usuarioSeleccionado) {
-                usuario.pagoMensual = valorPagoMensual;
-                dineroTotal += valorPagoMensual;
-            }
-        });
-        actualizarInforme();
-    }
-
-    function registrarGasto() {
-        var descripcionGasto = document.getElementById("descripcionGasto").value;
-        var valorGasto = parseFloat(document.getElementById("valorGasto").value);
-        gastosTotales += valorGasto;
-        dineroTotal -= valorGasto;
-        actualizarInforme();
-    }
-
-    function actualizarSelectUsuarios() {
-        var selectUsuariosSemanal = document.getElementById("usuariosPagoSemanal");
-        var selectUsuariosMensual = document.getElementById("usuariosPagoMensual");
-        selectUsuariosSemanal.innerHTML = "";
-        selectUsuariosMensual.innerHTML = "";
-        usuarios.forEach(function(usuario) {
-            var optionSemanal = document.createElement("option");
-            optionSemanal.text = usuario.nombre;
-            selectUsuariosSemanal.add(optionSemanal);
-            var optionMensual = document.createElement("option");
-            optionMensual.text = usuario.nombre;
-            selectUsuariosMensual.add(optionMensual);
-        });
-    }
-
-    function actualizarInforme() {
-        var dineroDisponible = dineroTotal - gastosTotales;
-        document.getElementById("dineroDisponible").innerText = "Dinero Disponible: $" + dineroDisponible.toFixed(2);
-    }
-</script>
+<!-- Aquí van los divs con el contenido de cada sección -->
 
 </body>
 </html>

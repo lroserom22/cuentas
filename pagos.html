@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagos - Asociación de Mujeres Sembradoras de Paz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .pagos-list {
+      margin-top: 20px;
+    }
+    .pagos-list-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Pagos</h2>
+
+  <button class="button" onclick="window.location.href='asociados.html'">Inicio</button>
+
+  <div class="form-group">
+    <label for="buscar-usuario">Buscar Usuario:</label>
+    <input type="text" id="buscar-usuario" placeholder="Ingrese el número de cédula del usuario">
+    <button class="button" onclick="buscarUsuario()">Buscar</button>
+  </div>
+
+  <div id="resultado-busqueda" style="display: none;">
+    <h3>Información del Asociado</h3>
+    <p><strong>Nombre:</strong> <span id="nombre-asociado"></span></p>
+    <h3>Historial de Pagos</h3>
+    <ul id="historial-pagos" class="pagos-list">
+      <!-- Aquí se mostrará el historial de pagos -->
+    </ul>
+  </div>
+
+  <div class="form-group">
+    <label for="fecha">Fecha:</label>
+    <input type="date" id="fecha">
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción:</label>
+    <input type="text" id="descripcion" placeholder="Ingrese una descripción">
+  </div>
+
+  <div class="form-group">
+    <label for="valor">Valor (COP):</label>
+    <input type="number" id="valor" placeholder="Ingrese el valor en pesos colombianos">
+  </div>
+
+  <button class="button" onclick="registrarPago()">Registrar Pago</button>
+</div>
+
+<script>
+  // Función para buscar un asociado por su número de cédula
+  function buscarUsuario() {
+    var numeroCedula = document.getElementById('buscar-usuario').value;
+    var usuarios = obtenerUsuarios();
+    var asociadoEncontrado = usuarios.find(function(usuario) {
+      return usuario.cc === numeroCedula;
+    });
+    if (asociadoEncontrado) {
+      document.getElementById('resultado-busqueda').style.display = 'block';
+      document.getElementById('nombre-asociado').textContent = asociadoEncontrado.nombre;
+      // Aquí se debe implementar la lógica para mostrar el historial de pagos del asociado
+      // Por ahora, se muestra un mensaje de ejemplo
+      document.getElementById('historial-pagos').innerHTML = '<li class="pagos-list-item">No hay pagos registrados para este usuario.</li>';
+    } else {
+      alert('El asociado no fue encontrado.');
+    }
+  }
+
+  // Función para obtener los usuarios del almacenamiento local
+  function obtenerUsuarios() {
+    var usuarios = localStorage.getItem('usuarios');
+    return usuarios ? JSON.parse(usuarios) : [];
+  }
+
+  // Función para registrar un pago
+  function registrarPago() {
+    var fecha = document.getElementById('fecha').value;
+    var descripcion = document.getElementById('descripcion').value;
+    var valor = document.getElementById('valor').value;
+    // Aquí se debe implementar la lógica para registrar el pago del asociado
+    // Puedes mostrar un mensaje de confirmación o realizar alguna otra acción según sea necesario
+    alert('Pago registrado exitosamente:');
+    // Limpiar los campos después de registrar el pago
+    document.getElementById('fecha').value = '';
+    document.getElementById('descripcion').value = '';
+    document.getElementById('valor').value = '';
+  }
+</script>
+
+</body>
+</html>

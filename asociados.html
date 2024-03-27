@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asociados - Asociación de Mujeres Sembradoras de Paz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    .user-list {
+      margin-top: 20px;
+    }
+    .user-item {
+      margin-bottom: 10px;
+    }
+    .user-item span {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Asociados</h2>
+  <div>
+    <button class="button" onclick="crearUsuario()">Crear Usuario</button>
+    <button class="button" onclick="window.location.href='index.html'">Inicio</button>
+  </div>
+
+  <div class="user-list">
+    <h3>Lista de Usuarios</h3>
+    <ul id="lista-usuarios">
+      <!-- Aquí se mostrarán los usuarios -->
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Función para obtener los usuarios del almacenamiento local
+  function obtenerUsuarios() {
+    var usuarios = localStorage.getItem('usuarios');
+    return usuarios ? JSON.parse(usuarios) : [];
+  }
+
+  // Función para mostrar los usuarios en la lista
+  function mostrarUsuarios() {
+    var listaUsuarios = document.getElementById('lista-usuarios');
+    listaUsuarios.innerHTML = '';
+    var usuarios = obtenerUsuarios();
+    usuarios.forEach(function(usuario, index) {
+      var li = document.createElement('li');
+      li.classList.add('user-item');
+      var spanCC = document.createElement('span');
+      spanCC.textContent = 'Cédula: ' + usuario.cc;
+      var spanNombre = document.createElement('span');
+      spanNombre.textContent = 'Nombre: ' + usuario.nombre;
+      var editarButton = document.createElement('button');
+      editarButton.textContent = 'Editar';
+      editarButton.onclick = function() {
+        editarUsuario(index);
+      };
+      var eliminarButton = document.createElement('button');
+      eliminarButton.textContent = 'Eliminar';
+      eliminarButton.onclick = function() {
+        eliminarUsuario(index);
+      };
+      li.appendChild(spanCC);
+      li.appendChild(spanNombre);
+      li.appendChild(editarButton);
+      li.appendChild(eliminarButton);
+      listaUsuarios.appendChild(li);
+    });
+  }
+
+  // Función para crear un nuevo usuario
+  function crearUsuario() {
+    var cc = prompt('Ingrese el número de cédula del usuario:');
+    var nombre = prompt('Ingrese el nombre del usuario:');
+    if (cc && nombre) {
+      var usuarios = obtenerUsuarios();
+      usuarios.push({ cc: cc, nombre: nombre });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      mostrarUsuarios();
+    }
+  }
+
+  // Función para editar un usuario existente
+  function editarUsuario(index) {
+    var nuevoNombre = prompt('Ingrese el nuevo nombre del usuario:');
+    if (nuevoNombre !== null) {
+      var usuarios = obtenerUsuarios();
+      usuarios[index].nombre = nuevoNombre;
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      mostrarUsuarios();
+    }
+  }
+
+  // Función para eliminar un usuario existente
+  function eliminarUsuario(index) {
+    var confirmar = confirm('¿Estás seguro de que deseas eliminar este usuario?');
+    if (confirmar) {
+      var usuarios = obtenerUsuarios();
+      usuarios.splice(index, 1);
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      mostrarUsuarios();
+    }
+  }
+
+  // Al cargar la página, mostrar los usuarios
+  mostrarUsuarios();
+</script>
+
+</body>
+</html>
