@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informes - Asociación de Mujeres Sembradoras de Paz</title>
+  <style>
+    /* Estilos para el informe */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Informes</h2>
+
+  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
+
+  <!-- Botones para cada sección del informe -->
+  <button class="button" onclick="generarInforme('usuarios')">Informe de Usuarios</button>
+  <button class="button" onclick="generarInforme('gastos')">Informe de Gastos</button>
+  <button class="button" onclick="generarInforme('pagos')">Informe de Pagos</button>
+  <button class="button" onclick="generarInforme('dinero_disponible')">Informe de Dinero Disponible</button>
+</div>
+
+<script src="jspdf.min.js"></script>
+<script>
+  // Función para generar el informe
+  function generarInforme(tipo) {
+    var contenido = '';
+
+    switch (tipo) {
+      case 'usuarios':
+        contenido = generarInformeUsuarios();
+        break;
+      case 'gastos':
+        contenido = generarInformeGastos();
+        break;
+      case 'pagos':
+        contenido = generarInformePagos();
+        break;
+      case 'dinero_disponible':
+        contenido = generarInformeDineroDisponible();
+        break;
+      default:
+        contenido = 'Tipo de informe no válido';
+    }
+
+    // Convertir contenido a PDF y descargar
+    var pdf = new jsPDF();
+    pdf.text('Informe - Asociación de Mujeres Sembradoras de Paz', 10, 10);
+    pdf.fromHTML(contenido, 10, 20);
+    pdf.save('informe_' + tipo + '.pdf');
+  }
+
+  // Función para generar el informe de usuarios
+  function generarInformeUsuarios() {
+    // Aquí deberías obtener la lista de usuarios y construir el contenido del informe
+    var usuarios = obtenerUsuarios(); // Suponiendo que tienes una función obtenerUsuarios()
+    var contenido = '<h3>Usuarios Registrados</h3><ul>';
+    usuarios.forEach(function(usuario) {
+      contenido += '<li>Cédula: ' + usuario.cedula + ', Nombre: ' + usuario.nombre + '</li>';
+    });
+    contenido += '</ul>';
+    return contenido;
+  }
+
+  // Función para generar el informe de gastos
+  function generarInformeGastos() {
+    // Aquí deberías obtener la lista de gastos y construir el contenido del informe
+    var gastos = obtenerGastos(); // Suponiendo que tienes una función obtenerGastos()
+    var contenido = '<h3>Informe de Gastos</h3><ul>';
+    gastos.forEach(function(gasto) {
+      contenido += '<li>Fecha: ' + gasto.fecha + ', Detalle: ' + gasto.detalle + ', Valor: ' + gasto.valor + '</li>';
+    });
+    contenido += '</ul>';
+    return contenido;
+  }
+
+  // Función para generar el informe de pagos
+  function generarInformePagos() {
+    // Aquí deberías obtener la lista de pagos y construir el contenido del informe
+    var pagos = obtenerPagos(); // Suponiendo que tienes una función obtenerPagos()
+    var contenido = '<h3>Informe de Pagos</h3><ul>';
+    pagos.forEach(function(pago) {
+      contenido += '<li>Fecha: ' + pago.fecha + ', Asociado: ' + pago.asociado + ', Valor: ' + pago.valor + '</li>';
+    });
+    contenido += '</ul>';
+    return contenido;
+  }
+
+  // Función para generar el informe de dinero disponible
+  function generarInformeDineroDisponible() {
+    // Aquí deberías calcular el dinero disponible y construir el contenido del informe
+    var dineroDisponible = calcularDineroDisponible(); // Suponiendo que tienes una función calcularDineroDisponible()
+    var contenido = '<h3>Informe de Dinero Disponible</h3><p>Dinero Disponible: ' + dineroDisponible + '</p>';
+    return contenido;
+  }
+</script>
+
+</body>
+</html>
