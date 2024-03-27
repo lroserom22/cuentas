@@ -28,6 +28,18 @@
     #informe {
       margin-top: 20px;
     }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
   </style>
 </head>
 <body>
@@ -35,10 +47,11 @@
 <div class="container">
   <h2>Informes</h2>
 
-  <button class="button" onclick="generarInforme('usuarios')">Informe de Usuarios</button>
-  <button class="button" onclick="generarInforme('gastos')">Informe de Gastos</button>
-  <button class="button" onclick="generarInforme('pagos')">Informe de Pagos</button>
-  <button class="button" onclick="generarInforme('dinero_disponible')">Informe de Dinero Disponible</button>
+  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
+  <button class="button" onclick="generarInforme('usuarios')">Usuarios</button>
+  <button class="button" onclick="generarInforme('gastos')">Gastos</button>
+  <button class="button" onclick="generarInforme('pagos')">Pagos</button>
+  <button class="button" onclick="generarInforme('dinero_disponible')">Dinero Disponible</button>
 
   <div id="informe"></div>
 </div>
@@ -69,50 +82,86 @@
     document.getElementById('informe').innerHTML = contenido;
   }
 
+  // Función para obtener la lista de usuarios desde el almacenamiento local
+  function obtenerUsuarios() {
+    var usuarios = localStorage.getItem('usuarios');
+    return usuarios ? JSON.parse(usuarios) : [];
+  }
+
+  // Función para obtener la lista de gastos desde el almacenamiento local
+  function obtenerGastos() {
+    var gastos = localStorage.getItem('gastos');
+    return gastos ? JSON.parse(gastos) : [];
+  }
+
+  // Función para obtener la lista de pagos desde el almacenamiento local
+  function obtenerPagos() {
+    var pagos = localStorage.getItem('pagos');
+    return pagos ? JSON.parse(pagos) : [];
+  }
+
   // Función para generar el informe de usuarios
   function generarInformeUsuarios() {
-    // Aquí deberías obtener la lista de usuarios y construir el contenido del informe
-    var usuarios = obtenerUsuarios(); // Suponiendo que tienes una función obtenerUsuarios()
-    var contenido = '<h3>Usuarios Registrados</h3><ul>';
+    var usuarios = obtenerUsuarios();
+    var contenido = '<h3>Usuarios Registrados</h3>';
+    contenido += '<table>';
+    contenido += '<tr><th>Cédula</th><th>Nombre</th></tr>';
     usuarios.forEach(function(usuario) {
-      contenido += '<li>Cédula: ' + usuario.cedula + ', Nombre: ' + usuario.nombre + '</li>';
+      contenido += '<tr><td>' + usuario.cc + '</td><td>' + usuario.nombre + '</td></tr>';
     });
-    contenido += '</ul>';
+    contenido += '</table>';
     return contenido;
   }
 
   // Función para generar el informe de gastos
   function generarInformeGastos() {
-    // Aquí deberías obtener la lista de gastos y construir el contenido del informe
-    var gastos = obtenerGastos(); // Suponiendo que tienes una función obtenerGastos()
-    var contenido = '<h3>Informe de Gastos</h3><ul>';
+    var gastos = obtenerGastos();
+    var contenido = '<h3>Informe de Gastos</h3>';
+    contenido += '<table>';
+    contenido += '<tr><th>Fecha</th><th>Detalle</th><th>Valor</th></tr>';
     gastos.forEach(function(gasto) {
-      contenido += '<li>Fecha: ' + gasto.fecha + ', Detalle: ' + gasto.detalle + ', Valor: ' + gasto.valor + '</li>';
+      contenido += '<tr><td>' + gasto.fecha + '</td><td>' + gasto.detalle + '</td><td>' + gasto.valor + '</td></tr>';
     });
-    contenido += '</ul>';
+    contenido += '</table>';
     return contenido;
   }
 
   // Función para generar el informe de pagos
   function generarInformePagos() {
-    // Aquí deberías obtener la lista de pagos y construir el contenido del informe
-    var pagos = obtenerPagos(); // Suponiendo que tienes una función obtenerPagos()
-    var contenido = '<h3>Informe de Pagos</h3><ul>';
+    var pagos = obtenerPagos();
+    var contenido = '<h3>Informe de Pagos</h3>';
+    contenido += '<table>';
+    contenido += '<tr><th>Fecha</th><th>Asociado</th><th>Valor</th></tr>';
     pagos.forEach(function(pago) {
-      contenido += '<li>Fecha: ' + pago.fecha + ', Asociado: ' + pago.asociado + ', Valor: ' + pago.valor + '</li>';
+      contenido += '<tr><td>' + pago.fecha + '</td><td>' + pago.asociado + '</td><td>' + pago.valor + '</td></tr>';
     });
-    contenido += '</ul>';
+    contenido += '</table>';
     return contenido;
+  }
+
+  // Función para calcular el dinero disponible
+  function calcularDineroDisponible() {
+    // Aquí puedes calcular el dinero disponible utilizando los datos de pagos y gastos
+    var pagos = obtenerPagos();
+    var totalPagos = pagos.reduce(function(total, pago) {
+      return total + pago.valor;
+    }, 0);
+
+    var gastos = obtenerGastos();
+    var totalGastos = gastos.reduce(function(total, gasto) {
+      return total + gasto.valor;
+    }, 0);
+
+    return totalPagos - totalGastos;
   }
 
   // Función para generar el informe de dinero disponible
   function generarInformeDineroDisponible() {
-    // Aquí deberías calcular el dinero disponible y construir el contenido del informe
-    var dineroDisponible = calcularDineroDisponible(); // Suponiendo que tienes una función calcularDineroDisponible()
-    var contenido = '<h3>Informe de Dinero Disponible</h3><p>Dinero Disponible: ' + dineroDisponible + '</p>';
+    var dineroDisponible = calcularDineroDisponible();
+    var contenido = '<h3>Informe de Dinero Disponible</h3>';
+    contenido += '<p>Dinero Disponible: $' + dineroDisponible + '</p>';
     return contenido;
   }
 </script>
-
 </body>
 </html>

@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pagos - Asociación de Mujeres Sembradoras de Paz</title>
+  <title>Informes - Asociación de Mujeres Sembradoras de Paz</title>
   <style>
+    /* Estilos para el informe */
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
     }
     .container {
       max-width: 800px;
@@ -26,176 +25,146 @@
     .button:hover {
       background-color: #0056b3;
     }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .pagos-list {
+    #informe {
       margin-top: 20px;
     }
-    .pagos-list-item {
-      margin-bottom: 10px;
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>Pagos</h2>
+  <h2>Informes</h2>
 
   <button class="button" onclick="window.location.href='index.html'">Inicio</button>
+  <button class="button" onclick="generarInforme('usuarios')">Usuarios</button>
+  <button class="button" onclick="generarInforme('gastos')">Gastos</button>
+  <button class="button" onclick="generarInforme('pagos')">Pagos</button>
+  <button class="button" onclick="generarInforme('dinero_disponible')">Dinero Disponible</button>
 
-  <div class="form-group">
-    <label for="buscar-usuario">Buscar Usuario:</label>
-    <input type="text" id="buscar-usuario" placeholder="Ingrese el número de cédula del usuario">
-    <button class="button" onclick="buscarUsuario()">Buscar</button>
-  </div>
-  
-  <div class="form-group">
-    <label for="fecha">Fecha:</label>
-    <input type="date" id="fecha">
-  </div>
-
-  <div class="form-group">
-    <label for="descripcion">Descripción:</label>
-    <input type="text" id="descripcion" placeholder="Ingrese una descripción">
-  </div>
-
-  <div class="form-group">
-    <label for="valor">Valor (COP):</label>
-    <input type="number" id="valor" placeholder="Ingrese el valor en pesos colombianos">
-  </div>
-
-  <button class="button" onclick="registrarPago()">Registrar Pago</button>
-  
-  <div id="resultado-busqueda" style="display: none;">
-    <h3>Información del Asociado</h3>
-    <p><strong>Nombre:</strong> <span id="nombre-asociado"></span></p>
-    <h3>Historial de Pagos</h3>
-    <ul id="historial-pagos" class="pagos-list">
-      <!-- Aquí se mostrará el historial de pagos -->
-    </ul>
-  </div>
+  <div id="informe"></div>
 </div>
 
 <script>
-  // Función para buscar un asociado por su número de cédula
-  function buscarUsuario() {
-    var numeroCedula = document.getElementById('buscar-usuario').value;
-    var usuarios = obtenerUsuarios();
-    var asociadoEncontrado = usuarios.find(function(usuario) {
-      return usuario.cc === numeroCedula;
-    });
-    if (asociadoEncontrado) {
-      document.getElementById('resultado-busqueda').style.display = 'block';
-      document.getElementById('nombre-asociado').textContent = asociadoEncontrado.nombre;
-      mostrarHistorialPagos(asociadoEncontrado.cc);
-    } else {
-      alert('El asociado no fue encontrado.');
+  // Función para generar el informe y mostrarlo en la página
+  function generarInforme(tipo) {
+    var contenido = '';
+
+    switch (tipo) {
+      case 'usuarios':
+        contenido = generarInformeUsuarios();
+        break;
+      case 'gastos':
+        contenido = generarInformeGastos();
+        break;
+      case 'pagos':
+        contenido = generarInformePagos();
+        break;
+      case 'dinero_disponible':
+        contenido = generarInformeDineroDisponible();
+        break;
+      default:
+        contenido = 'Tipo de informe no válido';
     }
+
+    // Mostrar el contenido del informe en el área designada
+    document.getElementById('informe').innerHTML = contenido;
   }
 
-  // Función para obtener los usuarios del almacenamiento local
+  // Función para obtener la lista de usuarios desde el almacenamiento local
   function obtenerUsuarios() {
     var usuarios = localStorage.getItem('usuarios');
     return usuarios ? JSON.parse(usuarios) : [];
   }
 
-  // Función para mostrar el historial de pagos de un asociado
-  function mostrarHistorialPagos(numeroCedula) {
-    var historialPagos = obtenerHistorialPagos(numeroCedula);
-    var listaPagos = document.getElementById('historial-pagos');
-    listaPagos.innerHTML = '';
-    historialPagos.forEach(function(pago, index) {
-      var li = document.createElement('li');
-      li.textContent = pago.fecha + ' - ' + pago.descripcion + ' - Valor: $' + pago.valor.toLocaleString('es-CO');
-      li.classList.add('pagos-list-item');
-      var editarButton = document.createElement('button');
-      editarButton.textContent = 'Editar';
-      editarButton.onclick = function() {
-        editarPago(numeroCedula, index);
-      };
-      var eliminarButton       
-      editarButton.onclick = function() {
-        editarPago(numeroCedula, index);
-      };
-      var eliminarButton = document.createElement('button');
-      eliminarButton.textContent = 'Eliminar';
-      eliminarButton.onclick = function() {
-        eliminarPago(numeroCedula, index);
-      };
-      li.appendChild(editarButton);
-      li.appendChild(eliminarButton);
-      listaPagos.appendChild(li);
+  // Función para obtener la lista de gastos desde el almacenamiento local
+  function obtenerGastos() {
+    var gastos = localStorage.getItem('gastos');
+    return gastos ? JSON.parse(gastos) : [];
+  }
+
+  // Función para obtener la lista de pagos desde el almacenamiento local
+  function obtenerPagos() {
+    var pagos = localStorage.getItem('pagos');
+    return pagos ? JSON.parse(pagos) : [];
+  }
+
+  // Función para generar el informe de usuarios
+  function generarInformeUsuarios() {
+    var usuarios = obtenerUsuarios();
+    var contenido = '<h3>Usuarios Registrados</h3>';
+    contenido += '<table>';
+    contenido += '<tr><th>Cédula</th><th>Nombre</th></tr>';
+    usuarios.forEach(function(usuario) {
+      contenido += '<tr><td>' + usuario.cc + '</td><td>' + usuario.nombre + '</td></tr>';
     });
+    contenido += '</table>';
+    return contenido;
   }
+  // Función para generar el informe de gastos
+function generarInformeGastos() {
+  var gastos = obtenerGastos();
+  var contenido = '<h3>Informe de Gastos</h3><ul>';
+  gastos.forEach(function(gasto) {
+    contenido += '<li>Fecha: ' + gasto.fecha + ', Detalle: ' + gasto.detalle + ', Valor: $' + formatNumber(gasto.valor.toFixed(2)) + '</li>';
+  });
+  contenido += '</ul>';
+  return contenido;
+}
 
-  // Función para obtener el historial de pagos de un asociado desde el almacenamiento local
-  function obtenerHistorialPagos(numeroCedula) {
-    var historialPagos = localStorage.getItem('historialPagos_' + numeroCedula);
-    return historialPagos ? JSON.parse(historialPagos) : [];
-  }
-
-  // Función para guardar un pago en el historial de pagos de un asociado
-  function guardarPago(numeroCedula, pago) {
-    var historialPagos = obtenerHistorialPagos(numeroCedula);
-    historialPagos.push(pago);
-    localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
-  }
-
-  // Función para editar un pago en el historial de pagos de un asociado
-  function editarPago(numeroCedula, index) {
-    var historialPagos = obtenerHistorialPagos(numeroCedula);
-    var nuevoDescripcion = prompt('Ingrese la nueva descripción:');
-    var nuevoValor = prompt('Ingrese el nuevo valor:');
-    if (nuevoDescripcion !== null && nuevoValor !== null) {
-      historialPagos[index].descripcion = nuevoDescripcion;
-      historialPagos[index].valor = parseFloat(nuevoValor);
-      localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
-      mostrarHistorialPagos(numeroCedula);
+// Función para generar el informe de pagos
+function generarInformePagos() {
+  var cedula = prompt("Por favor, ingresa el número de cédula del asociado:");
+  var pagos = obtenerPagos();
+  var contenido = '<h3>Informe de Pagos del Asociado con Cédula ' + cedula + '</h3>';
+  contenido += '<table>';
+  contenido += '<tr><th>Fecha</th><th>Asociado</th><th>Valor</th></tr>';
+  pagos.forEach(function(pago) {
+    if (pago.asociado === cedula) {
+      contenido += '<tr><td>' + pago.fecha + '</td><td>' + pago.asociado + '</td><td>' + pago.valor + '</td></tr>';
     }
+  });
+  contenido += '</table>';
+  document.getElementById('informe').innerHTML = contenido; // Agregamos esta línea para mostrar el informe en el área designada
+}
+
+
+  // Función para calcular el dinero disponible
+  function calcularDineroDisponible() {
+    // Aquí puedes calcular el dinero disponible utilizando los datos de pagos y gastos
+    var pagos = obtenerPagos();
+    var totalPagos
+    var totalPagos = pagos.reduce(function(total, pago) {
+      return total + pago.valor;
+    }, 0);
+
+    var gastos = obtenerGastos();
+    var totalGastos = gastos.reduce(function(total, gasto) {
+      return total + gasto.valor;
+    }, 0);
+
+    return totalPagos - totalGastos;
   }
 
-  // Función para eliminar un pago del historial de pagos de un asociado
-  function eliminarPago(numeroCedula, index) {
-    var confirmar = confirm('¿Estás seguro de que deseas eliminar este pago?');
-    if (confirmar) {
-      var historialPagos = obtenerHistorialPagos(numeroCedula);
-      historialPagos.splice(index, 1);
-      localStorage.setItem('historialPagos_' + numeroCedula, JSON.stringify(historialPagos));
-      mostrarHistorialPagos(numeroCedula);
-    }
+  // Función para generar el informe de dinero disponible
+  function generarInformeDineroDisponible() {
+    var dineroDisponible = calcularDineroDisponible();
+    var contenido = '<h3>Informe de Dinero Disponible</h3>';
+    contenido += '<p>Dinero Disponible: ' + formatCurrency(dineroDisponible) + '</p>';
+    return contenido;
   }
 
-  // Función para registrar un pago
-  function registrarPago() {
-    var numeroCedula = document.getElementById('buscar-usuario').value;
-    var fecha = document.getElementById('fecha').value;
-    var descripcion = document.getElementById('descripcion').value;
-    var valor = parseFloat(document.getElementById('valor').value);
-    if (!isNaN(valor)) {
-      var pago = { fecha: fecha, descripcion: descripcion, valor: valor };
-      guardarPago(numeroCedula, pago);
-      mostrarHistorialPagos(numeroCedula);
-      // Limpiar los campos después de registrar el pago
-      document.getElementById('fecha').value = '';
-      document.getElementById('descripcion').value = '';
-      document.getElementById('valor').value = '';
-    } else {
-      alert('Por favor, ingrese un valor válido.');
-    }
-  }
 </script>
-
 </body>
 </html>
-
