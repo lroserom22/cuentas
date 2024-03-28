@@ -3,6 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asociación de Mujeres Sembradoras de Paz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .title {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+      margin: 20px auto;
+      width: 60%;
+      display: flex;
+      justify-content: center;
+      border-radius: 5px;
+    }
+    .tab a {
+      text-decoration: none;
+    }
+    .tab button {
+      background-color: #007bff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+      color: #fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+    .tab button:hover {
+      background-color: #0056b3;
+    }
+    .tab button.active {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="title">
+  <h1>Asociación de Mujeres Sembradoras de Paz</h1>
+</div>
+
+<div class="tab">
+  <a href="asociados.html"><button class="tablinks">Asociados</button></a>
+  <a href="pagos.html"><button class="tablinks">Pagos</button></a>
+  <a href="gastos.html"><button class="tablinks">Gastos</button></a>
+  <a href="informes.html"><button class="tablinks">Informes</button></a>
+</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gastos - Asociación de Mujeres Sembradoras de Paz</title>
   <style>
     body {
@@ -51,9 +113,7 @@
 
 <div class="container">
   <h2>Registrar Gastos</h2>
-
-  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
-
+  
   <div class="form-group">
     <label for="fecha">Fecha:</label>
     <input type="date" id="fecha">

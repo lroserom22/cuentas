@@ -3,12 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Informes - Asociación de Mujeres Sembradoras de Paz</title>
+  <title>Asociación de Mujeres Sembradoras de Paz</title>
   <style>
-    /* Estilos para el informe */
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
     }
+    .title {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+      margin: 20px auto;
+      width: 60%;
+      display: flex;
+      justify-content: center;
+      border-radius: 5px;
+    }
+    .tab a {
+      text-decoration: none;
+    }
+    .tab button {
+      background-color: #007bff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+      color: #fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+    .tab button:hover {
+      background-color: #0056b3;
+    }
+    .tab button.active {
+      background-color: #0056b3;
+    }
+    /* Estilos para el informe */
     .container {
       max-width: 800px;
       margin: 0 auto;
@@ -44,14 +84,24 @@
 </head>
 <body>
 
+<div class="title">
+  <h1>Asociación de Mujeres Sembradoras de Paz</h1>
+</div>
+
+<div class="tab">
+  <a href="asociados.html"><button class="tablinks">Asociados</button></a>
+  <a href="pagos.html"><button class="tablinks">Pagos</button></a>
+  <a href="gastos.html"><button class="tablinks">Gastos</button></a>
+  <a href="informes.html"><button class="tablinks">Informes</button></a>
+</div>
+
 <div class="container">
   <h2>Informes</h2>
 
-  <button class="button" onclick="window.location.href='index.html'">Inicio</button>
   <button class="button" onclick="generarInforme('usuarios')">Usuarios</button>
   <button class="button" onclick="generarInforme('gastos')">Gastos</button>
   <button class="button" onclick="generarInforme('pagos')">Pagos</button>
-  <button class="button" onclick="generarInforme('dinero_disponible')">Dinero Disponible</button>
+  <button class="button" onclick="generarInforme('dinero_disponible'); calcularDineroDisponible();">Dinero Disponible</button>
 
   <div id="informe"></div>
 </div>
@@ -139,43 +189,35 @@
     return contenido;
   }
 
-  // Función para calcular el dinero disponible
-  function calcularDineroDisponible() {
-    var totalAportes = obtenerPagos().reduce(function(total, pago) {
-      return total + pago.valor;
-    }, 0);
+// Función para calcular el dinero disponible
+function calcularDineroDisponible() {
+  // Obtener los pagos desde el almacenamiento local
+  var pagos = obtenerPagos();
+  // Calcular el total de los pagos
+  var totalAportes = pagos.reduce(function(total, pago) {
+    return total + pago.valor;
+  }, 0);
 
-    var totalGastos = obtenerGastos().reduce(function(total, gasto) {
-      return total + gasto.valor;
-    }, 0);
+  // Obtener los gastos desde el almacenamiento local
+  var gastos = obtenerGastos();
+  // Calcular el total de los gastos
+  var totalGastos = gastos.reduce(function(total, gasto) {
+    return total + gasto.valor;
+  }, 0);
 
-    return totalAportes - totalGastos;
-  }
+  // Calcular el dinero disponible restando los gastos totales de los aportes totales
+  var dineroDisponible = totalAportes - totalGastos;
 
-  // Función para generar el informe de dinero disponible
-  function generarInformeDineroDisponible() {
-    var totalAportes = obtenerPagos().reduce(function(total, pago) {
-      return total + pago.valor;
-    }, 0);
+  // Mostrar el dinero disponible en el área designada
+  document.getElementById('informe').innerText = 'Dinero Disponible: ' + formatCurrency(dineroDisponible);
 
-    var totalGastos = obtenerGastos().reduce(function(total, gasto) {
-      return total + gasto.valor;
-    }, 0);
-
-    var dineroDisponible = totalAportes - totalGastos;
-
-    var contenido = '<h3>Informe de Dinero Disponible</h3>';
-    contenido += '<p>Total de Aportes: ' + formatCurrency(totalAportes.toFixed(2)) + '</p>';
-    contenido += '<p>Total de Gastos: ' + formatCurrency(totalGastos.toFixed(2)) + '</p>';
-    contenido += '<p>Dinero Disponible: ' + formatCurrency(dineroDisponible.toFixed(2)) + '</p>';
-    return contenido;
-  }
-
+  // Retornar el dinero disponible (si lo necesitas para otro propósito)
+  return dineroDisponible;
+}
   // Función para dar formato de moneda a un número
   function formatCurrency(number) {
     return '$' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-
 </script>
 </body>
 </html>
